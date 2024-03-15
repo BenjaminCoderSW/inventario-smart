@@ -9,8 +9,9 @@
         require_once "./php/main.php";
 
         # Eliminar usuario #
+        // Si la variable de tipo get llamada user_id_del viene definida entonces:
         if(isset($_GET['user_id_del'])){
-            // Incluimos el archivo para eliminar un usuario #
+            // Incluimos el archivo para eliminar un usuario 
             require_once "./php/usuario_eliminar.php";
         }
 

@@ -19,7 +19,7 @@
 
 	}else{
 
-        // Sino mostramos los datos, evitando que se muestre el usuario que esta haciendo la consulta con el WHERE a traves de su id en caso de que queramos que SI
+        // Sino, seleccionamos los datos, evitando que se muestre el usuario que esta haciendo la consulta con el WHERE a traves de su id en caso de que queramos que SI
         //se muestre tambien el usuario que esta haciendo la consulta, simplemente le quitamos la parte del WHERE ( WHERE usuario_id!='".$_SESSION['id']."' )
         // y agregando un limite con limit de lo que contanga la variable inicio (indice) y registros (15 registros maximo como limite)
 		$consulta_datos="SELECT * FROM usuario WHERE usuario_id!='".$_SESSION['id']."' ORDER BY usuario_nombre ASC LIMIT $inicio,$registros";

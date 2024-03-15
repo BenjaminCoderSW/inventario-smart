@@ -119,6 +119,7 @@
 
 
     /*== Almacenando datos del usuario ==*/
+    // Limpiamos cada dato de inyeccion sql
     $nombre=limpiar_cadena($_POST['usuario_nombre']);
     $apellido=limpiar_cadena($_POST['usuario_apellido']);
 
@@ -221,24 +222,34 @@
 
 
     /*== Verificando usuario ==*/
+    // Verificamos que el usuario del formulario es el mismo que el que tenemos almacenado en la base de datos
     if($usuario!=$datos['usuario_usuario']){
+        // Abrimos conexion a la base de datos
 	    $check_usuario=conexion();
+        // Hacemos una consulta select, selecciona usuario_usuario de la tabla usuario donde el usuario_usuario sea el mismo al que se mando en el formulario
 	    $check_usuario=$check_usuario->query("SELECT usuario_usuario FROM usuario WHERE usuario_usuario='$usuario'");
+        // Si la consulta select si selecciono un dato, significa que esa usuario SI existe en nuestra base de datos, entonces:
 	    if($check_usuario->rowCount()>0){
+            // Mandaremos una notificacion diciendo que el usuario ya se encuentra registrado
 	        echo '
 	            <div class="notification is-danger is-light">
 	                <strong>¡Ocurrio un error inesperado!</strong><br>
 	                El USUARIO ingresado ya se encuentra registrado, por favor elija otro
 	            </div>
 	        ';
+            // Detenemos la ejecucion del script
 	        exit();
 	    }
+        // Cerrarmos la conexion a la base de datos
 	    $check_usuario=null;
     }
 
 
     /*== Verificando claves ==*/
+
+    // Si la clave NO viene vacia OR la clave2 NO viene vacia entonces:
     if($clave_1!="" || $clave_2!=""){
+        // Veririfamos que ambas tengan el formato correcto que nosotros estamos solicitando
     	if(verificar_datos("[a-zA-Z0-9$@.-]{7,100}",$clave_1) || verificar_datos("[a-zA-Z0-9$@.-]{7,100}",$clave_2)){
 	        echo '
 	            <div class="notification is-danger is-light">
@@ -246,27 +257,41 @@
 	                Las CLAVES no coinciden con el formato solicitado
 	            </div>
 	        ';
+            // Detenemos la ejecucion del script
 	        exit();
 	    }else{
+            // En caso de SI tengan el formato correcto:
+            // Verificamos si las claves coinciden
 		    if($clave_1!=$clave_2){
+                // Si las claves son diferentes significa que no coinciden
 		        echo '
 		            <div class="notification is-danger is-light">
 		                <strong>¡Ocurrio un error inesperado!</strong><br>
 		                Las CLAVES que ha ingresado no coinciden
 		            </div>
 		        ';
+                // Detenemos la ejecucion del script
 		        exit();
 		    }else{
+                // Si las claves NO son diferentes significa que SI coinciden entonces:
+                // Encriptamos la clave
 		        $clave=password_hash($clave_1,PASSWORD_BCRYPT,["cost"=>10]);
 		    }
 	    }
     }else{
+        // En caso de que clave 1 o clave 2, en caso de que alguna venga vacia entonces:
+        // Almacenamos en la variable $clave la clave que tenemos registrada en la base de datos
     	$clave=$datos['usuario_clave'];
     }
 
 
     /*== Actualizar datos ==*/
+    // Abrimos conexion a la base de datos
     $actualizar_usuario=conexion();
+    // Hacemos una consulta para actualizar UPDATE utilizando prepare para mayor seguridad
+    // Actualiza de la tabla usuario los campos usuario_nombre, usuario_apellido, usuario_usuario, usuario_clave, usuario_email
+    // DONDE usuario_id sea igual al id del usuario que esta enviando el formulario
+    // Poniendoles el valor que almacena cada variable ($nombre, $apellido, $usuario, etc..) usando sus marcadores de posicion del array llamado $marcadores
     $actualizar_usuario=$actualizar_usuario->prepare("UPDATE usuario SET usuario_nombre=:nombre,usuario_apellido=:apellido,usuario_usuario=:usuario,usuario_clave=:clave,usuario_email=:email WHERE usuario_id=:id");
 
     $marcadores=[
@@ -278,6 +303,7 @@
         ":id"=>$id
     ];
 
+    // Si el usuario se actualizo con exito entonces:
     if($actualizar_usuario->execute($marcadores)){
         echo '
             <div class="notification is-info is-light">
@@ -286,6 +312,7 @@
             </div>
         ';
     }else{
+        // Si no se actualizo con exito entonces:
         echo '
             <div class="notification is-danger is-light">
                 <strong>¡Ocurrio un error inesperado!</strong><br>
@@ -293,4 +320,5 @@
             </div>
         ';
     }
+    // Cerramos la conexion a la base de datos
     $actualizar_usuario=null;
