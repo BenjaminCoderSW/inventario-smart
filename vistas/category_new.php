@@ -5,6 +5,8 @@
 
 <div class="container pb-6 pt-6">
 
+	<!-- En este div vamos a mostrar la respuesta que nos devuelva el archivo que va a procesar los datos a traves de AJAX
+    osea el archivo ajax.js a traves de la clase form-rest -->
 	<div class="form-rest mb-6 mt-6"></div>
 
 	<!-- Ponemos en el action del formulario la ruta del archivo a la que queremos enviar los datos desde este formulario -->

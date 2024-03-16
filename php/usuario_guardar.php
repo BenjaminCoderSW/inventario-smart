@@ -125,6 +125,8 @@
 
     // Hacemos conexion a la BD con la funcion conexion() del archivo main.php
     $check_usuario=conexion();
+    // Hago una consulta SELECT, selecciona usuario_usuario de la tabla usuario DONDE usuario_usuario sea igual al usuario 
+    // que se esta mandando desde el formulario user_new.php
     $check_usuario=$check_usuario->query("SELECT usuario_usuario FROM usuario WHERE usuario_usuario = '$usuario'");
     // Si existe un registro con ese usuario en la consulta a la base de datos entonces:
     if($check_usuario->rowCount() > 0){
