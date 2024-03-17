@@ -153,7 +153,8 @@
     $actualizar_producto=conexion();
     // Preparamos una consulta UPDATE para actualizar los campos de ese producto que queremos actualizar con los nuevos valores
     // que tenemos almacenados en el array con sus marcadores correspondientes
-    $actualizar_producto=$actualizar_producto->prepare("UPDATE producto SET producto_codigo=:codigo,producto_nombre=:nombre,producto_precio=:precio,producto_stock=:stock,categoria_id=:categoria WHERE producto_id=:id");
+    $actualizar_producto=$actualizar_producto->prepare("UPDATE producto SET producto_codigo=:codigo,producto_nombre=:nombre,producto_precio=:precio,producto_stock=:stock,
+    categoria_id=:categoria WHERE producto_id=:id");
 
     // Array de los nuevos valores con los que se actualizara el producto
     $marcadores=[
