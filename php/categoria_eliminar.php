@@ -10,7 +10,7 @@
     // y esa peticion la almacenamos en la variable $check_categoria
     $check_categoria=$check_categoria->query("SELECT categoria_id FROM categoria WHERE categoria_id='$category_id_del'");
     
-     // Este if es para saber si existe la categoria que se quizo seleccionar anteriormente en la base de datos
+    // Este if es para saber si existe la categoria que se quizo seleccionar anteriormente en la base de datos
     // Si los datos seleccionados en la consulta es igual a 1 entonces significa que si existe, entonces:
     if($check_categoria->rowCount()==1){
 
