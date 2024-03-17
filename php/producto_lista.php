@@ -12,25 +12,21 @@
     // Recordemos que por ejemplo producto.producto_id quiero seleccionar el campo producto_id de la tabla producto, ya que
     // con el INNER JOIN lo que hago es que puedo seleccionar campos de diferentes tablas uniendolas con el INNER JOIN
     // por eso es importante especificar de que tabla es cada campo
-	$campos="producto.producto_id,producto.producto_codigo,producto.producto_nombre,producto.producto_precio,producto.producto_stock,producto.producto_foto,
-    producto.categoria_id,producto.usuario_id,categoria.categoria_id,categoria.categoria_nombre,usuario.usuario_id,usuario.usuario_nombre,usuario.usuario_apellido";
+	$campos="producto.producto_id,producto.producto_codigo,producto.producto_nombre,producto.producto_precio,producto.producto_stock,producto.producto_foto,producto.categoria_id,producto.usuario_id,categoria.categoria_id,categoria.categoria_nombre,usuario.usuario_id,usuario.usuario_nombre,usuario.usuario_apellido";
 
     // Aqui veremos si generaremos el listado con busqueda o el listado normal sin nungun filtro de busqueda
     // Si la variable busqueda viene definida y tiene algo almacenado entonces:
 	if(isset($busqueda) && $busqueda!=""){
         // Consulta con INNER JOIN añadiendo busqueda
 
-		$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id INNER JOIN usuario ON
-         producto.usuario_id=usuario.usuario_id WHERE producto.producto_codigo LIKE '%$busqueda%' OR producto.producto_nombre LIKE '%$busqueda%'
-          ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
+		$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id INNER JOIN usuario ON producto.usuario_id=usuario.usuario_id WHERE producto.producto_codigo LIKE '%$busqueda%' OR producto.producto_nombre LIKE '%$busqueda%' ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
 
 		$consulta_total="SELECT COUNT(producto_id) FROM producto WHERE producto_codigo LIKE '%$busqueda%' OR producto_nombre LIKE '%$busqueda%'";
 
     // Si el valor de categoria_id es mayor a 0 significa que hemos seleccionado una categoria entonces:
 	}elseif($categoria_id>0){
         // Son las mismas consultas que las normales pero donde categoria_id sea igual al id de la categoria que seleccionamos
-		$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id INNER JOIN usuario ON 
-        producto.usuario_id=usuario.usuario_id WHERE producto.categoria_id='$categoria_id' ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
+		$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id INNER JOIN usuario ON producto.usuario_id=usuario.usuario_id WHERE producto.categoria_id='$categoria_id' ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
 
         // Aqui vamos a tener el total de registros que tenemos de la tabla producto en la base de datos DONDE categoria_id sea igual al id de la categoria que seleccionamos
 		$consulta_total="SELECT COUNT(producto_id) FROM producto WHERE categoria_id='$categoria_id'";
@@ -43,8 +39,7 @@
         // y usuario_id de la tabla producto sea igual a usuario_id de la tabla usuario
         // Y ordena los registros seleccionados de manera Ascendente por nombre del producto
         // y agregando un limite con limit de lo que contanga la variable inicio (indice) y registros (15 registros maximo como limite)
-		$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id INNER JOIN usuario ON 
-        producto.usuario_id=usuario.usuario_id ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
+		$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id INNER JOIN usuario ON producto.usuario_id=usuario.usuario_id ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
 
         // Aqui vamos a tener el total de registros que tenemos de la tabla producto en la base de datos 
 		$consulta_total="SELECT COUNT(producto_id) FROM producto";
@@ -99,9 +94,7 @@
 			            <div class="content">
 			              <p>
 			                <strong>'.$contador.' - '.$rows['producto_nombre'].'</strong><br>
-			                <strong>CODIGO:</strong> '.$rows['producto_codigo'].', <strong>PRECIO:</strong> $'.$rows['producto_precio'].', <strong>STOCK:</strong> '.
-                            $rows['producto_stock'].', <strong>CATEGORIA:</strong> '.$rows['categoria_nombre'].', <strong>REGISTRADO POR:</strong> '.
-                            $rows['usuario_nombre'].' '.$rows['usuario_apellido'].'
+			                <strong>CODIGO:</strong> '.$rows['producto_codigo'].', <strong>PRECIO:</strong> $'.$rows['producto_precio'].', <strong>STOCK:</strong> '.$rows['producto_stock'].', <strong>CATEGORIA:</strong> '.$rows['categoria_nombre'].', <strong>REGISTRADO POR:</strong> '.$rows['usuario_nombre'].' '.$rows['usuario_apellido'].'
 			              </p>
 			            </div>
 			            <div class="has-text-right">
@@ -134,8 +127,7 @@
 	}
 
 	if($total>0 && $pagina<=$Npaginas){
-		$tabla.='<p class="has-text-right">Mostrando productos <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.
-        $total.'</strong></p>';
+		$tabla.='<p class="has-text-right">Mostrando productos <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
 	}
 
 	$conexion=null;

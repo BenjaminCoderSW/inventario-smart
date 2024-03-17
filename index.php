@@ -9,6 +9,7 @@
     ?>
 </head>
 <body class="fondo">
+    <!-- este es el segundo avance para integradora 2 -->
     <?php
 
     // Si mi variable tipo GET llamada vista no viene definida o esta vacia
