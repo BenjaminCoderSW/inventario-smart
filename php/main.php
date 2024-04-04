@@ -2,10 +2,17 @@
 
  /* Aqui en principal (main vamos a tener todas las funciones que se repiten en el sistema */
  
-#  Conexion a la base de datos
+#  Conexion a la base de datos de manera local
+// function conexion(){
+//     #  Creamos una variable de instancia a la clase PDO y la conexion a la BD inventario dentro de esa variable
+//     $pdo = new PDO('mysql:host=localhost;dbname=inventario','root','Benji2003');
+//     return $pdo;
+// }
+
+#  Conexion a la base de datos de mi hosting
 function conexion(){
     #  Creamos una variable de instancia a la clase PDO y la conexion a la BD inventario dentro de esa variable
-    $pdo = new PDO('mysql:host=localhost;dbname=inventario','root','Benji2003');
+    $pdo = new PDO('mysql:host=srv867.hstgr.io;dbname=u954703204_inventario','u954703204_benji','HKJCHKfhaf76732');
     return $pdo;
 }
 

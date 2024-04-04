@@ -70,6 +70,7 @@
             $_SESSION['nombre'] = $check_user['usuario_nombre'];
             $_SESSION['apellido'] = $check_user['usuario_apellido'];
             $_SESSION['usuario'] = $check_user['usuario_usuario'];
+            $_SESSION['correo'] = $check_user['usuario_email'];
 
             // Si se han enviado encabezados HTTP al cliente entonces:
             if(headers_sent()){

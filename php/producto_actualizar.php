@@ -1,6 +1,8 @@
 <?php
 	// Incluimos el script con las funciones importantes
     require_once "main.php";
+    require_once "../inc/configuracion_correo.php"; // Importamos la configuración de PHPMailer que hicimos
+    require "../inc/session_start.php"; // Incluimos la sesion para el envio de correo (El destinatario con las variables de sesion)
 
 	/*== Almacenando id ==*/
     // Almacenamos el id mandado desde el formulario del archivo product_update.php en el input con name producto_id
@@ -166,23 +168,96 @@
         ":id"=>$id
     ];
 
-    // Si la consulta UPDATE se ejecuta correctamente mandandole los valores correctos entonces:
-    if($actualizar_producto->execute($marcadores)){
-        // Diremos que el producto se actualizo con exito
-        echo '
-            <div class="notification is-info is-light">
-                <strong>¡PRODUCTO ACTUALIZADO!</strong><br>
-                El producto se actualizo con exito
-            </div>
-        ';
-    }else{
+    // Si la consulta UPDATE se ejecuta correctamente mandándole los valores correctos entonces:
+if ($actualizar_producto->execute($marcadores)) {
+    // Diremos que el producto se actualizó con éxito
+    echo '
+        <div class="notification is-info is-light">
+            <strong>¡PRODUCTO ACTUALIZADO!</strong><br>
+            El producto se actualizó con éxito
+        </div>
+    ';
+
+
+        // Verificamos si hay una sesión iniciada y si existen las variables de sesión necesarias para el envio de correo con alerta stock
+        if (isset($_SESSION['correo']) && isset($_SESSION['nombre'])) {
+            // Obtenemos el correo electrónico y el nombre del usuario desde las variables de sesión
+            $correoDestinatario = $_SESSION['correo'];
+            $nombreDestinatario = $_SESSION['nombre'];
+
+            // Verificamos que el correo electrónico del destinatario no esté vacío o nulo
+            if (!empty($correoDestinatario)) {
+                // Agregamos al destinatario del correo electrónico para el envio de correo phpmailer
+                $mail->addAddress($correoDestinatario, $nombreDestinatario);
+            } else {
+                // Si no se proporcionó una dirección de correo electrónico válida, mostramos un mensaje de error
+                echo '
+                    <div class="notification is-danger is-light">
+                        <strong>¡Alerta de stock!</strong><br>
+                        No se proporcionó una dirección de correo electrónico para una notificacion por correo electronico. ¡Su nivel de unidades de este producto es baja!
+                    </div>
+                ';
+                exit();
+            }
+        } else {
+            // Si no se han iniciado sesión o faltan variables de sesión, mostramos un mensaje de error o redirigimos a la página de inicio de sesión
+            echo '
+                <div class="notification is-danger is-light">
+                    <strong>¡Ocurrió un error!</strong><br>
+                    Debes iniciar sesión para enviar correos electrónicos.
+                </div>
+            ';
+            exit();
+        }
+
+
+        // Verificamos si el stock actualizado es menor o igual a 1
+        if ($stock <= 4) {
+            // Construimos el mensaje con el nombre del producto y el stock actual, con el stock en negritas
+            $mensaje = 'Tu producto ' . $nombre . ' está a punto de agotarse, queda/n <strong>' . $stock . ' unidad/es </strong> de este producto en tu inventario.';
+            // Agregamos un salto de línea para solicitar que no se responda al correo
+            $mensaje .= '<br><br>Por favor, no responda a este correo electrónico, ya que es un envio automatico.';
+            $mail->Body = $mensaje; // Cuerpo del correo electrónico
+
+            // Verificamos que el correo del destinatario no esté vacío o nulo
+            if (!empty($correoDestinatario)) {
+                // Agregamos al destinatario del correo electrónico
+                $mail->addAddress($correoDestinatario, $nombreDestinatario);
+
+                // Intentamos enviar el correo electrónico
+                if ($mail->send()) {
+                    // El correo se envió con éxito
+                    echo '
+                        <div class="notification is-success is-light">
+                            Se ha enviado una alerta de stock bajo al usuario.
+                        </div>
+                    ';
+                } else {
+                    // Hubo un error al enviar el correo electrónico
+                    echo '
+                        <div class="notification is-danger is-light">
+                            Error al enviar el correo electrónico: ' . $mail->ErrorInfo . '
+                        </div>
+                    ';
+                }
+            } else {
+                // Si el correo del destinatario está vacío o nulo, no hacemos nada y no enviamos el correo
+                echo '
+                    <div class="notification is-warning is-light">
+                        No se proporcionó una dirección de correo electrónico válida para el destinatario. No se enviará ningún correo.
+                    </div>
+                ';
+            }
+        }
+    } else {
         // En caso de que el producto no se haya actualizado correctamente entonces:
         echo '
             <div class="notification is-danger is-light">
-                <strong>¡Ocurrio un error inesperado!</strong><br>
-                No se pudo actualizar el producto, por favor intente nuevamente
+                <strong>¡Ocurrió un error inesperado!</strong><br>
+                No se pudo actualizar el producto, por favor inténtelo nuevamente
             </div>
         ';
     }
+
     // Cerramos la conexion a la base de datos que estabamos ocupando para actualizar el producto
     $actualizar_producto=null;
